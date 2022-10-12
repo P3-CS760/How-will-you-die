@@ -1,0 +1,41 @@
+---
+title: "760 age prediction"
+author: "Ben Fry"
+date: '2022-10-10'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library("tidyverse")
+```
+
+```{r}
+data_in <- read.csv("bow_clean_final.csv")
+```
+
+```{r}
+d <- read.csv("life-expectancy.csv")
+```
+
+```{r}
+death <- aggregate(d[, 4], list(d$Year), mean)
+colnames(death) <- c('Birth.year', 'Pred.death')
+```
+
+```{r}
+clean <- subset(data_in, select = -c(Words) )
+clean_1960 <- clean[clean$'Birth.year' >= 1960,] 
+```
+
+```{r}
+plot(death, xlab = "Birth year", ylab = "Life expectancy", main = "Global life expectancy by birth year")
+```
+
+
+```{r}
+full_df <- merge(x = clean, y = death, 'Birth.year')
+```
+```{r}
+sqrt(mean((full_df$Age.of.death - full_df$Pred.death)^2))
+```
